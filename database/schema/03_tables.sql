@@ -67,6 +67,12 @@ CREATE TABLE organization.store (
   id TEXT PRIMARY KEY,
   organization_id TEXT NOT NULL,
   name TEXT NOT NULL,
+  slug TEXT UNIQUE,
+  currency TEXT DEFAULT 'MXN',
+  timezone TEXT DEFAULT 'America/Mexico_City',
+  logo TEXT,
+  is_active BOOLEAN DEFAULT true,
+  metadata JSONB,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ
 );
