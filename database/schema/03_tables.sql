@@ -76,3 +76,84 @@ CREATE TABLE organization.store (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ
 );
+
+
+-- CATEGORY 
+-- Represents a grouping of products within a store.
+-- Categories can be nested to form a hierarchy.
+
+CREATE TABLE category (
+  id TEXT PRIMARY KEY,
+  store_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  parent_id TEXT,
+  is_active BOOLEAN DEFAULT true,
+  allow_discount BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+)
+
+-- CUSTOMER
+-- Represents a customer in the system.
+-- Customers must be associated with a store.
+
+CREATE TABLE customer(
+  id TEXT PRIMARY KEY,
+  store_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  email TEXT,
+  phone TEXT,
+  tax_id TEXT,
+  type customer_type DEFAULT 'individual',
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+)
+
+
+-- PRODUCT
+-- Represents a product available for sale in a store.
+
+CREATE TABLE product (
+  id TEXT PRIMARY KEY,
+  store_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT,
+  price NUMERIC(10,2) NOT NULL,
+  min_price NUMERIC(10,2),
+  discount_limit_type discount_type,
+	discount_limit_value NUMERIC(10, 3),
+	cost NUMERIC(10, 2),
+	sku TEXT,
+	type product_type NOT NULL,
+	unit unit_type DEFAULT 'unit' NOT NULL,
+	is_active BOOLEAN DEFAULT true NOT NULL,
+	allow_discount BOOLEAN DEFAULT true NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+)
+
+-- PRODUCT BARCODE
+-- Associates a product with a unique barcode.
+
+CREATE TABLE product_barcode (
+	id text PRIMARY KEY NOT NULL,
+  store_id TEXT NOT NULL,
+  product_id TEXT NOT NULL,
+  code TEXT NOT NULL,
+  is_primary BOOLEAN DEFAULT false NOT NULL
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+)
+
+-- PRODUCT CATEGORY
+-- Associates a product with one or more categories.
+
+CREATE TABLE product_category (
+	id TEXT PRIMARY KEY NOT NULL,
+	store_id TEXT NOT NULL,
+	product_id TEXT NOT NULL,
+	category_id TEXT NOT NULL
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+);
