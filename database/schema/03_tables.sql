@@ -97,7 +97,7 @@ CREATE TABLE category (
 -- Represents a customer in the system.
 -- Customers must be associated with a store.
 
-CREATE TABLE customer(
+CREATE TABLE customer (
   id TEXT PRIMARY KEY,
   store_id TEXT NOT NULL,
   name TEXT NOT NULL,
@@ -156,4 +156,69 @@ CREATE TABLE product_category (
 	category_id TEXT NOT NULL
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ
+);
+
+-- PRODUCT SUPPLIER
+-- Associates a product with one or more suppliers.
+
+CREATE TABLE product_supplier (
+  id TEXT PRIMARY KEY NOT NULL,
+  store_id TEXT NOT NULL,
+  supplier_id TEXT NOT NULL,
+  product_id TEXT NOT NULL, 
+  cost NUMERIC(10, 2) NOT NULL,
+  is_preferred BOOLEAN DEFAULT false NOT NULL,
+  supplier_sku TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+);
+
+-- SUPPLIER
+-- Represents a supplier in the system.
+
+CREATE TABLE supplier (
+	id text PRIMARY KEY NOT NULL,
+  store_id text NOT NULL,
+	name text NOT NULL,
+	business_name text,
+	tax_id text,
+	type supplier_type DEFAULT 'distributor' NOT NULL,
+	status supplier_status DEFAULT 'active' NOT NULL,
+	contact_name text,
+	email text,
+	phone text,
+	address text,
+	payment_terms_days integer DEFAULT 0,
+	credit_limit numeric(10, 2),
+	metadata jsonb DEFAULT '{}'
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+);
+
+
+-- INVENTORY
+-- Manages stock levels for each product in a store.
+
+CREATE TABLE inventory (
+  id TEXT PRIMARY KEY NOT NULL,
+  store_id TEXT NOT NULL,
+  product_id TEXT NOT NULL,
+  quantity NUMERIC(10, 3) DEFAULT 0 NOT NULL,
+  min_stock NUMERIC(10,3),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+);
+
+-- INVENTORY MOVEMENT
+-- Records changes in inventory levels.
+
+CREATE TABLE inventory_movement (
+  id text PRIMARY KEY NOT NULL,
+	store_id text NOT NULL,
+	product_id text NOT NULL,
+	type inventory_movement_type NOT NULL,
+	quantity numeric(10, 3) NOT NULL,
+	reference_id text,
+	note text,
+	balance_after numeric(10, 3) NOT NULL
 );

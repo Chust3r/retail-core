@@ -91,3 +91,65 @@ ADD CONSTRAINT fk_product_category_product
 FOREIGN KEY (product_id)
 REFERENCES product (id)
 ON DELETE CASCADE;
+
+
+-- PRODUCT → PRODUCT SUPPLIER
+-- Ensures each product_supplier belongs to a valid product.
+-- If a product is deleted, all its product_suppliers are automatically removed.
+
+ALTER TABLE product_supplier
+ADD CONSTRAINT fk_product_supplier_product
+FOREIGN KEY (product_id)
+REFERENCES product (id)
+ON DELETE CASCADE;
+
+-- SUPPLIER → STORE
+-- Ensures each supplier belongs to a valid store.
+-- If a store is deleted, all its suppliers are automatically removed.
+
+ALTER TABLE supplier
+ADD CONSTRAINT fk_supplier_store
+FOREIGN KEY (store_id)
+REFERENCES organization.store (id)
+ON DELETE CASCADE;
+
+-- INVENTORY → STORE
+-- Ensures each inventory belongs to a valid store.
+-- If a store is deleted, all its inventories are automatically removed.
+
+ALTER TABLE inventory
+ADD CONSTRAINT fk_inventory_store
+FOREIGN KEY (store_id)
+REFERENCES organization.store (id)
+ON DELETE CASCADE;
+
+-- INVENTORY → PRODUCT
+-- Ensures each inventory belongs to a valid product.
+-- If a product is deleted, all its inventories are automatically removed.
+
+ALTER TABLE inventory
+ADD CONSTRAINT fk_inventory_product
+FOREIGN KEY (product_id)
+REFERENCES product (id)
+ON DELETE CASCADE;
+
+
+-- INVENTORY MOVEMENT → STORE
+-- Ensures each inventory movement belongs to a valid store.
+-- If a store is deleted, all its inventory movements are automatically removed.
+
+ALTER TABLE inventory_movement
+ADD CONSTRAINT fk_inventory_movement_store
+FOREIGN KEY (store_id)
+REFERENCES organization.store (id)
+ON DELETE CASCADE;
+
+-- INVENTORY MOVEMENT → PRODUCT
+-- Ensures each inventory movement belongs to a valid product.
+-- If a product is deleted, all its inventory movements are automatically removed.
+
+ALTER TABLE inventory_movement
+ADD CONSTRAINT fk_inventory_movement_product
+FOREIGN KEY (product_id)
+REFERENCES product (id)
+ON DELETE CASCADE;
