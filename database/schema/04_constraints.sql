@@ -153,3 +153,74 @@ ADD CONSTRAINT fk_inventory_movement_product
 FOREIGN KEY (product_id)
 REFERENCES product (id)
 ON DELETE CASCADE;
+
+
+-- SALE → STORE
+-- Ensures each sale belongs to a valid store.
+-- If a store is deleted, all its sales are automatically removed.
+
+ALTER TABLE sale
+ADD CONSTRAINT fk_sale_store
+FOREIGN KEY (store_id)
+REFERENCES organization.store (id)
+ON DELETE CASCADE;
+
+-- SALE ITEM → STORE 
+-- Ensures each sale item belongs to a valid store.
+-- If a store is deleted, all its sale items are automatically removed.
+
+ALTER TABLE sale_item
+ADD CONSTRAINT fk_sale_item_store
+FOREIGN KEY (store_id)
+REFERENCES organization.store (id)
+ON DELETE CASCADE;
+
+-- SALE → SALE ITEM
+-- Ensures each sale item belongs to a valid sale.
+-- If a sale is deleted, all its sale items are automatically removed.
+
+ALTER TABLE sale_item
+ADD CONSTRAINT fk_sale_item_sale
+FOREIGN KEY (sale_id)
+REFERENCES sale (id)
+ON DELETE CASCADE;
+
+-- SALE ITEM → PRODUCT
+-- Ensures each sale item belongs to a valid product.
+-- If a product is deleted, all its sale items are automatically removed.
+
+ALTER TABLE sale_item
+ADD CONSTRAINT fk_sale_item_product
+FOREIGN KEY (product_id)
+REFERENCES product (id)
+ON DELETE CASCADE;
+
+-- INVOICE → STORE
+-- Ensures each invoice belongs to a valid store.
+-- If a store is deleted, all its invoices are automatically removed.
+
+ALTER TABLE invoice
+ADD CONSTRAINT fk_invoice_store
+FOREIGN KEY (store_id)
+REFERENCES organization.store (id)
+ON DELETE CASCADE;
+
+-- INVOICE → SALE
+-- Ensures each invoice belongs to a valid sale.
+-- If a sale is deleted, all its invoices are automatically removed.
+
+ALTER TABLE invoice
+ADD CONSTRAINT fk_invoice_sale
+FOREIGN KEY (sale_id)
+REFERENCES sale (id)
+ON DELETE CASCADE;
+
+-- PAYMENT → INVOICE
+-- Ensures each payment belongs to a valid invoice.
+-- If an invoice is deleted, all its payments are automatically removed.
+
+ALTER TABLE payment
+ADD CONSTRAINT fk_payment_invoice
+FOREIGN KEY (invoice_id)
+REFERENCES invoice (id)
+ON DELETE CASCADE;

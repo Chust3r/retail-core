@@ -137,7 +137,7 @@ CREATE TABLE product (
 -- Associates a product with a unique barcode.
 
 CREATE TABLE product_barcode (
-	id text PRIMARY KEY NOT NULL,
+	id TEXT PRIMARY KEY NOT NULL,
   store_id TEXT NOT NULL,
   product_id TEXT NOT NULL,
   code TEXT NOT NULL,
@@ -177,19 +177,19 @@ CREATE TABLE product_supplier (
 -- Represents a supplier in the system.
 
 CREATE TABLE supplier (
-	id text PRIMARY KEY NOT NULL,
-  store_id text NOT NULL,
-	name text NOT NULL,
-	business_name text,
-	tax_id text,
+	id TEXT PRIMARY KEY NOT NULL,
+  store_id TEXT NOT NULL,
+	name TEXT NOT NULL,
+	business_name TEXT,
+	tax_id TEXT,
 	type supplier_type DEFAULT 'distributor' NOT NULL,
 	status supplier_status DEFAULT 'active' NOT NULL,
-	contact_name text,
-	email text,
-	phone text,
-	address text,
+	contact_name TEXT,
+	email TEXT,
+	phone TEXT,
+	address TEXT,
 	payment_terms_days integer DEFAULT 0,
-	credit_limit numeric(10, 2),
+	credit_limit NUMERIC(10, 2),
 	metadata jsonb DEFAULT '{}'
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ
@@ -213,12 +213,81 @@ CREATE TABLE inventory (
 -- Records changes in inventory levels.
 
 CREATE TABLE inventory_movement (
-  id text PRIMARY KEY NOT NULL,
-	store_id text NOT NULL,
-	product_id text NOT NULL,
+  id TEXT PRIMARY KEY NOT NULL,
+	store_id TEXT NOT NULL,
+	product_id TEXT NOT NULL,
 	type inventory_movement_type NOT NULL,
-	quantity numeric(10, 3) NOT NULL,
-	reference_id text,
-	note text,
-	balance_after numeric(10, 3) NOT NULL
+	quantity NUMERIC(10, 3) NOT NULL,
+	reference_id TEXT,
+	note TEXT,
+	balance_after NUMERIC(10, 3) NOT NULL
+);
+
+-- SALE
+-- Represents a sale transaction in the system.
+
+CREATE TABLE sale (
+  id TEXT PRIMARY KEY NOT NULL,
+  store_id TEXT NOT NULL,
+  total NUMERIC(10,2) NOT NULL,
+  tax NUMERIC(10,2) DEFAULT 0 NOT NULL,
+  discount NUMERIC(10,2) DEFAULT 0 NOT NULL,
+  payment_method payment_method DEFAULT 'cash' NOT NULL,
+  status sale_status DEFAULT 'pending' NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+);
+
+-- SALE ITEM
+-- Associates a sale with one or more products.
+
+CREATE TABLE sale_item (
+	id TEXT PRIMARY KEY NOT NULL,
+	store_id TEXT NOT NULL,
+	sale_id TEXT NOT NULL,
+	product_id TEXT NOT NULL,
+	product_name TEXT NOT NULL,
+	quantity NUMERIC(10, 3) NOT NULL,
+	unit_price NUMERIC(10, 2) NOT NULL,
+	discount NUMERIC(10, 3) DEFAULT 0 NOT NULL,
+	tax_rate NUMERIC(10, 3) DEFAULT 0 NOT NULL,
+	tax_amount NUMERIC(10, 3) DEFAULT 0 NOT NULL,
+	subtotal NUMERIC(10, 2) NOT NULL,
+	total NUMERIC(10, 2) NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+);
+
+-- INVOICE
+-- Represents an invoice for a sale.
+
+CREATE TABLE invoice(
+  id TEXT PRIMARY KEY NOT NULL,
+  store_id TEXT NOT NULL,
+  sale_id TEXT NOT NULL,
+  code TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
+);
+
+-- PAYMENT
+-- Represents a payment made for a sale.
+
+CREATE TABLE payment (
+	id TEXT PRIMARY KEY NOT NULL,
+	store_id TEXT NOT NULL,
+	sale_id TEXT NOT NULL,
+	method payment_method NOT NULL,
+	amount NUMERIC(10, 2) NOT NULL,
+	currency TEXT NOT NULL,
+	received_amount NUMERIC(10, 2) NOT NULL,
+	change_amount NUMERIC(10, 2),
+	reference TEXT,
+	processor TEXT,
+	status payment_status DEFAULT 'completed' NOT NULL,
+	status_reason TEXT,
+	processed_at TIMESTAMPTZ,
+	metadata jsonb DEFAULT '{}'
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ
 );
